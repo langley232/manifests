@@ -1,0 +1,15 @@
+#git rm --cached .terraform
+*.tfstate
+*.tfstate.*
+.terraformrc
+terraform.rc
+**/.terraform/*
+*.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+crash.log
+crash.*.log
+.terraform/*
+.terraform
