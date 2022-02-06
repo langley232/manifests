@@ -15,11 +15,11 @@ provider "azurerm" {
 
 # Create a resource group if it doesn't exist
 resource "azurerm_resource_group" "myterraformgroup" {
-    name     = "myResourceGroup"
+    name     = "myResourceGroup-east"
     location = "eastus"
 
     tags = {
-        environment = "Terraform Demo"
+        environment = "eastus"
     }
 }
 
@@ -31,7 +31,7 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
     resource_group_name = azurerm_resource_group.myterraformgroup.name
 
     tags = {
-        environment = "Terraform Demo"
+        environment = "eastus"
     }
 }
 
@@ -41,6 +41,7 @@ resource "azurerm_subnet" "myterraformsubnet" {
     resource_group_name  = azurerm_resource_group.myterraformgroup.name
     virtual_network_name = azurerm_virtual_network.myterraformnetwork.name
     address_prefixes       = ["10.0.1.0/24"]
+  
 }
 
 # Create public IPs
@@ -49,9 +50,9 @@ resource "azurerm_public_ip" "myterraformpublicip" {
     location                     = "eastus"
     resource_group_name          = azurerm_resource_group.myterraformgroup.name
     allocation_method            = "Dynamic"
-
+    
     tags = {
-        environment = "Terraform Demo"
+        environment = "eastus"
     }
 }
 
@@ -126,12 +127,12 @@ resource "azurerm_storage_account" "mystorageaccount" {
 }
 
 # Create (and display) an SSH key
-resource "tls_private_key" "example_ssh" {
+resource "tls_private_key" "east_ssh_key" {
   algorithm = "RSA"
   rsa_bits = 4096
 }
 output "tls_private_key" { 
-    value = tls_private_key.example_ssh.private_key_pem 
+    value = tls_private_key.east_ssh_key.private_key_pem 
     sensitive = true
 }
 
@@ -156,13 +157,13 @@ resource "azurerm_linux_virtual_machine" "myterraformvm" {
         version   = "latest"
     }
 
-    computer_name  = "myvm"
+    computer_name  = "myvm-east"
     admin_username = "azureuser"
     disable_password_authentication = true
 
     admin_ssh_key {
         username       = "azureuser"
-        public_key     = tls_private_key.example_ssh.public_key_openssh
+        public_key     = tls_private_key.east_ssh_key.public_key_openssh
     }
 
     boot_diagnostics {
